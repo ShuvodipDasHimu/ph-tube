@@ -20,7 +20,12 @@ const loadCategoryVideos = (id) => {
 
   fetch(url)
   .then(res=>res.json())
-  .then(data=>displayVideos(data.category))
+  .then(data=>{
+    const clickedButton = document.getElementById(`btn-${id}`);
+    clickedButton.classList.add("active")
+    console.log(clickedButton);
+    displayVideos(data.category);
+  });
 }
 
 function displayCategories(categories){
@@ -32,7 +37,7 @@ function displayCategories(categories){
     // create Element
     const categoryDiv = document.createElement("div");
     categoryDiv.innerHTML = `
-        <button onclick="loadCategoryVideos(${cat.category_id})" class="btn btn-sm hover:bg-[#FF1F3D] hover:text-white">${cat.category}</button>
+        <button id="btn-${cat.category_id}" onclick="loadCategoryVideos(${cat.category_id})" class="btn btn-sm hover:bg-[#FF1F3D] hover:text-white">${cat.category}</button>
     `;
     // Append the Element
     categoryContainer.appendChild(categoryDiv)
@@ -43,6 +48,16 @@ const displayVideos=(videos)=>{
   const videoContainer = document.getElementById("video-container");
 
   videoContainer.innerHTML="";
+
+  if(videos.length == 0){
+    videoContainer.innerHTML = `
+      <div class="py-20 col-span-full flex flex-col text-center justify-center items-center">
+      <img class="w-[120px]" src="./assets/Icon.png" alt="Error">
+      <h2 class="text-2xl font-bold">Oops!! Sorry, There is no content here</h2>
+    </div>
+    `;
+    return;
+  }
 
   videos.forEach(video=>{
     // create Element
